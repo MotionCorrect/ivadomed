@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - hanna2
   pull_request:
     branches:
       - master
