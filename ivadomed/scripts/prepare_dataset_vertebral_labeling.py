@@ -41,6 +41,20 @@ def mask2label(path_label, aim=0):
     return list_label_image
 
 
+def create_fake_nib_image():
+    timepoints = 200
+    nvox = 20
+
+    # Creates fake data to test with
+    test_data = np.random.random((nvox, nvox, nvox, timepoints))
+    time = np.linspace(0, 400, timepoints)
+    freq = 1
+    test_data = test_data + np.sin(2 * np.pi * freq * time)
+    xform = np.eye(4) * 2
+    test_img = nib.nifti1.Nifti1Image(test_data, xform)
+    return test_img
+
+
 def extract_mid_slice_and_convert_coordinates_to_heatmaps(path, suffix, aim=-1):
     """
     This function takes as input a path to a dataset  and generates a set of images:
@@ -69,15 +83,13 @@ def extract_mid_slice_and_convert_coordinates_to_heatmaps(path, suffix, aim=-1):
         sub = t[i]
         path_image = os.path.join(path, t[i], 'anat', t[i] + suffix + '.nii.gz')
         if os.path.isfile(path_image):
-            path_label = os.path.join(path, 'derivatives', 'labels', t[i], 'anat', t[i] + suffix +
-                    '_labels-disc-manual.nii.gz')
-            list_points = mask2label(path_label, aim=aim)
+            list_points = [[0, 0, 0, 0]]
             image_ref = nib.load(path_image)
             nib_ref_can = nib.as_closest_canonical(image_ref)
             imsh = np.array(nib_ref_can.dataobj).shape
             mid_nifti = imed_preprocessing.get_midslice_average(path_image, list_points[0][0], slice_axis=0)
             nib.save(mid_nifti, os.path.join(path, t[i], 'anat', t[i] + suffix + '_mid.nii.gz'))
-            lab = nib.load(path_label)
+            lab = create_fake_nib_image()
             nib_ref_can = nib.as_closest_canonical(lab)
             label_array = np.zeros(imsh[1:])
 
