@@ -1,6 +1,8 @@
 import sys
 import os
 import shutil
+import nibabel as nib
+import numpy as np
 from ivadomed.utils import init_ivadomed, __ivadomed_dir__
 from ivadomed.scripts import download_data as ivadomed_download_data
 
@@ -52,6 +54,26 @@ def printv(string, verbose=1, type='normal'):
                 print(string)
         except Exception:
             print(string)
+
+
+def generate_labels():
+    subdir = ['sub-unf01', 'sub-unf012', 'sub-unf03']
+    files = ['_T1w_lesion-manual.nii.gz', '_T1w_seg-manual.nii.gz', '_T2star_lesion-manual.nii.gz',
+             '_T2star_seg-manual.nii.gz', '_T2w_labels-disc-manual.nii.gz', '_T2w_lesion-manual.nii.gz',
+             '_T2w_seg-manual.nii.gz']
+    label_path = os.path.join(__data_testing_dir__, 'derivatives', 'labels')
+    source_path = os.path.join(__data_testing_dir__, subdir[0], 'anat', "sub-unf01_T1w.nii.gz")
+    img = nib.load(source_path)
+    cropped_img = img.slicer[50:-50, 50:-50]
+    data = cropped_img.get_data()
+    threshold = np.percentile(data, 5)
+    data[data > threshold] = 0
+    clipped_img = nib.Nifti1Image(data, img.affine, img.header)
+    for dir in subdir:
+        for f in files:
+            path = os.path.join(label_path, "anat", dir + f)
+            if not os.path.exists(path):
+                nib.save(clipped_img, path)
 
 
 def download_dataset(dataset='data_testing', verbose=True):

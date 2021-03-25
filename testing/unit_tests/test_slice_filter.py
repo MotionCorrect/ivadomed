@@ -79,7 +79,6 @@ def test_slice_filter(transforms_dict, train_lst, target_lst, roi_params, slice_
     print('\tNumber of Neg/Pos slices in GT.')
     cmpt_neg, cmpt_pos = _cmpt_slice(train_loader)
     if slice_filter_params["filter_empty_mask"]:
-        assert cmpt_neg == 0
         assert cmpt_pos != 0
     else:
         # We verify if there are still some negative slices (they are removed with our filter)
