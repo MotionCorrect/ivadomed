@@ -20,5 +20,4 @@ pytest-ordering
 sphinx-jsonschema
 pytest-console-scripts
 pre-commit==2.10.1
---find-links https://github.com/SimpleITK/SimpleITK/releases/tag/latest
-SimpleITK==2.1.0.dev211
+SimpleITK
