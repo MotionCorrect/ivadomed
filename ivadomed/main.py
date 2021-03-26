@@ -9,6 +9,7 @@ import sys
 import platform
 import multiprocessing
 import re
+import hashlib
 
 from ivadomed.utils import logger
 from ivadomed import evaluation as imed_evaluation
@@ -341,6 +342,17 @@ def run_command(context, n_gif=0, thr_increment=None, resume_training=False):
                                                                                           path_output,
                                                                                           context["loader_parameters"]
                                                                                           ['subject_selection'])
+
+    # generating sha256 for training data
+    context['training_sha256'] = {}
+    for file in train_lst:
+        df_sub = bids_df.df.loc[bids_df.df['filename'] == file]
+        file_path = df_sub['path'].values[0]
+        sha256_hash = hashlib.sha256()
+        with open(file_path, "rb") as f:
+            for byte_block in iter(lambda: f.read(4096), b""):
+                sha256_hash.update(byte_block)
+            context['training_sha256'][file] = sha256_hash.hexdigest()
 
     # TESTING PARAMS
     # Aleatoric uncertainty
