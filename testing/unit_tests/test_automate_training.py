@@ -696,8 +696,8 @@ def test_make_config_list(initial_config, all_combin, multi_params, param_list,
 
 
 @pytest.mark.parametrize("initial_config", [initial_config])
-@pytest.mark.parametrize("file_lst", [["sub-unf01_T2w.nii.gz"]])
-def test_config_sha256(initial_config, file_lst):
+def test_config_sha256(initial_config):
+    file_lst = ["sub-unf01_T2w.nii.gz"]
     loader_params = {
         "transforms_params": {},
         "data_list": ['sub-unf01'],
