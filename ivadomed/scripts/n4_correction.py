@@ -36,8 +36,7 @@ def main(args=None):
     parser = get_parser()
     args = imed_utils.get_arguments(parser, args)
 
-    input_image = sitk.ReadImage(args.input, sitk.sitkFloat32)
-    image = input_image
+    input_image = sitk.ReadImage(args.input)
 
     if args.mask_image:
         mask_image = sitk.ReadImage(args.mask_image, sitk.sitkUint8)
@@ -45,10 +44,12 @@ def main(args=None):
         mask_image = sitk.OtsuThreshold(input_image, 0, 1, 200)
 
     if args.shrink_factor:
-        image = sitk.Shrink(input_image,
+        input_image = sitk.Shrink(input_image,
                             [args.shrink_factor] * input_image.GetDimension())
         mask_image = sitk.Shrink(mask_image,
                                  [args.shrink_factor] * input_image.GetDimension())
+
+    input_image = sitk.Cast(input_image, sitk.sitkFloat32)
 
     corrector = sitk.N4BiasFieldCorrectionImageFilter()
 
@@ -61,11 +62,7 @@ def main(args=None):
         corrector.SetMaximumNumberOfIterations([args.n_iterations]
                                                * number_fitting_levels)
 
-    output = corrector.Execute(image, mask_image)
-
-    log_bias_field = corrector.GetLogBiasFieldAsImage(input_image)
-
-    output = input_image / sitk.Exp(log_bias_field)
+    output = corrector.Execute(input_image, mask_image)
 
     sitk.WriteImage(output, args.output)
 
