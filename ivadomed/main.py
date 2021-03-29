@@ -122,6 +122,22 @@ def get_dataset(bids_df, loader_params, data_lst, transform_params, cuda_availab
     return ds
 
 
+def generate_sha_256(context, bids_df, file_lst):
+    # generating sha256 for list of data
+    context['training_sha256'] = {}
+    # file_list is a list of filename strings
+    for file in file_lst:
+        # bids_df is a dataframe with column values path...filename...
+        # so df_sub is the row with matching filename=file
+        df_sub = bids_df.df.loc[bids_df.df['filename'] == file]
+        file_path = df_sub['path'].values[0]
+        sha256_hash = hashlib.sha256()
+        with open(file_path, "rb") as f:
+            for byte_block in iter(lambda: f.read(4096), b""):
+                sha256_hash.update(byte_block)
+            context['training_sha256'][file] = sha256_hash.hexdigest()
+
+
 def save_config_file(context, path_output):
     # Save config file within path_output and path_output/model_name
     # Done after the threshold_analysis to propate this info in the config files
@@ -343,16 +359,8 @@ def run_command(context, n_gif=0, thr_increment=None, resume_training=False):
                                                                                           context["loader_parameters"]
                                                                                           ['subject_selection'])
 
-    # generating sha256 for training data
-    context['training_sha256'] = {}
-    for file in train_lst:
-        df_sub = bids_df.df.loc[bids_df.df['filename'] == file]
-        file_path = df_sub['path'].values[0]
-        sha256_hash = hashlib.sha256()
-        with open(file_path, "rb") as f:
-            for byte_block in iter(lambda: f.read(4096), b""):
-                sha256_hash.update(byte_block)
-            context['training_sha256'][file] = sha256_hash.hexdigest()
+    # Generating sha256 for the training files
+    generate_sha_256(context, bids_df, train_lst)
 
     # TESTING PARAMS
     # Aleatoric uncertainty
