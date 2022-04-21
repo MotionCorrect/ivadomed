@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - master
+      - yd/singularity
 
 jobs:
   build-singularity-container:
@@ -27,3 +28,8 @@ jobs:
 
       - name: Build container
         run: sudo singularity build --notest ivadomed_master.sif ivadomed_singularity_master.def
+
+      - name: Upload the singularity container
+        uses: actions/upload-artifact@v3
+        with:
+          path: ivadomad_master.sif
