@@ -18,37 +18,10 @@ From: python:3.8-slim-bullseye
     python --version
     python3 --version
 
-    # Ensure git is there.
-    apt-get update
-    apt-get install git -y
-
-    cd /
-    git clone https://github.com/ivadomed/ivadomed.git
-    cd ivadomed
-    chmod -R 777 .
-
-    # List files for easy sanity check during building debugging.
-    ls -lasth
-
-    # This is where all analyses are stored. To avoid clashing with mounted /home
-
-    # Install the master branch
-    pip install -r requirements_dev.txt
+    # Install the google api library
+    pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
     pip list
-
-    # CPU support
-    # pip install torch==1.8.0+cpu torchvision==0.9.0+cpu --find-links https://download.pytorch.org/whl/torch_stable.html
-
-    # GPU support
-    pip install torch==1.8.1+cu111 torchvision==0.9.1+cu111 --find-links https://download.pytorch.org/whl/torch_stable.html
-    pip list
-
-
-%test
-    # Sanity check after installing. Use `--notest` to bypass during build.
-    # Manually trigger-able via `singularity test my_container.sif`
-    cd /ivadomed
-    pytest
+    python upload.py
 
 
 %runscript
