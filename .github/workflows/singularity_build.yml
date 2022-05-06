@@ -29,6 +29,11 @@ jobs:
       - name: Build container
         run: sudo singularity build --notest ivadomed_master.sif ivadomed_singularity_master.def
 
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
       - name: Upload the singularity container
         run: python upload.py
 
