@@ -26,8 +26,8 @@ jobs:
       - name: Check out code for the container builds
         uses: actions/checkout@v2
 
-      - name: Build container
-        run: sudo singularity build --notest ivadomed_master.sif ivadomed_singularity_master.def
+      #- name: Build container
+      #  run: sudo singularity build --notest ivadomed_master.sif ivadomed_singularity_master.def
 
       - name: Set up Python
         uses: actions/setup-python@v2
