@@ -34,6 +34,6 @@ jobs:
 
       - name: Upload container
         run: |
-          sudo singularity exec pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
+          sudo singularity exec python -m pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
           sudo singularity exec python upload.py
 
