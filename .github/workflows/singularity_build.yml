@@ -17,6 +17,7 @@ jobs:
       matrix:
         singularity_version:
           - '3.8.1'
+        python-version: [3.8]
 
     container:
       image: quay.io/singularity/singularity:v${{ matrix.singularity_version }}
@@ -29,10 +30,8 @@ jobs:
      # - name: Build container
      #   run: sudo singularity build --notest ivadomed_master.sif ivadomed_singularity_master.def
 
-      - name: Set up Python 3.8
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
 
       - name: Set up dependencies
         run: python -m pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
