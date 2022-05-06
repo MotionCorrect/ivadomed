@@ -29,9 +29,11 @@ jobs:
       - name: Build container
         run: sudo singularity build --notest ivadomed_master.sif ivadomed_singularity_master.def
 
-      - name: Build upload container
-        run: sudo singularity build upload.sif upload.def
-        
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
       - name: Upload container
-        run: sudo singularity run upload.sif
+        run: |
+          sudo singularity exec pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
+          sudo singularity exec python upload.py
 
