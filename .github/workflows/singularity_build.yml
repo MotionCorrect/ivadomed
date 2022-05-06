@@ -30,6 +30,5 @@ jobs:
         run: sudo singularity build --notest ivadomed_master.sif ivadomed_singularity_master.def
 
       - name: Upload the singularity container
-        uses: actions/upload-artifact@v3
-        with:
-          path: ivadomad_master.sif
+        run: python upload.py
+
