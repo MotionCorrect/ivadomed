@@ -30,16 +30,16 @@ jobs:
      # - name: Build container
      #   run: sudo singularity build --notest ivadomed_master.sif ivadomed_singularity_master.def
 
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-
+  upload:
+    needs: build-singularity-container
+    runs-on: ubuntu-latest
+    container: python:3-slim
+    steps:
       - name: Set up dependencies
         run: |
-          /usr/bin/python -m pip install --upgrade pip
-          /usr/bin/pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
+          python3 -m pip install --upgrade pip
+          pip3 install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
       - name: Upload the singularity container
-        run: /usr/bin/python upload.py
+        run: python3 upload.py
 
