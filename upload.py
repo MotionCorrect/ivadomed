@@ -38,8 +38,8 @@ def main():
     try:
         service = build('drive', 'v3', credentials=creds)
 
-        file_metadata = {'name': 'ivadomed_master.sif'}
-        media = MediaFileUpload('ivadomed_master.sif',
+        file_metadata = {'name': 'upload.py'}
+        media = MediaFileUpload('upload.py',
                                 mimetype='application/octet-stream',
                                 chunksize=1024*1024,
                                 resumable=True)
@@ -47,7 +47,7 @@ def main():
         request = service.files().create(body=file_metadata,
                                       media_body=media,
                                       fields='id')
-
+        print(request.to_json())
         response = None
         while response is None:
             status, response = request.next_chunk()
